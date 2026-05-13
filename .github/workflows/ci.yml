@@ -41,6 +41,7 @@ jobs:
             Engine/Source/Programs/Horde \
             Engine/Source/Programs/Shared \
             Engine/Source/Programs/UnrealBuildTool \
+            Engine/Source/Programs/AutomationTool/Properties \
             Engine/Source/Programs/AutomationTool/AutomationUtils \
             Engine/Source/Programs/AutomationTool/BuildGraph \
             Engine/Binaries/DotNET/GitDependencies \
