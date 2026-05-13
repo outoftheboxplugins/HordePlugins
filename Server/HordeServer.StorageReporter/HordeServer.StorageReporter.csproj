@@ -1,14 +1,37 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- Horde plugin boilerplate -->
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>OutOfTheBoxPlugins</RootNamespace>
   </PropertyGroup>
 
+  <!-- Package Info -->
+  <PropertyGroup>
+    <PackageId>OutOfTheBoxPlugins.HordeStorageReporter</PackageId>
+    <Authors>Out of the Box Plugins</Authors>
+    <Description>Storage breakdown viewer for Horde.</Description>
+    <RepositoryUrl>https://github.com/outoftheboxplugins/HordePlugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Shared\EpicGames.Horde\EpicGames.Horde.csproj" />
-    <ProjectReference Include="..\..\..\HordeServer.Shared\HordeServer.Shared.csproj" />
-    <ProjectReference Include="..\..\Storage\HordeServer.Storage\HordeServer.Storage.csproj" />
+    <None Include="LICENSE.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Horde dependencies -->
+  <!-- PrivateAssets=all because consumers resolve these from their local Horde source -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Shared\EpicGames.Horde\EpicGames.Horde.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\HordeServer.Shared\HordeServer.Shared.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Storage\HordeServer.Storage\HordeServer.Storage.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>
