@@ -2,6 +2,7 @@
 
   <!-- Horde plugin boilerplate -->
   <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>OutOfTheBoxPlugins</RootNamespace>
   </PropertyGroup>
