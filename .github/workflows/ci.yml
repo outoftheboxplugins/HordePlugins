@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  UE_VERSION: "5.7"
+  UE_PATH: ${{ github.workspace }}/ue
+
+jobs:
+  build-and-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 2048
+          swap-size-mb: 1024
+          build-mount-path: ${{ github.workspace }}
+          overprovision-lvm: 'true'
+          remove-dotnet: 'true'
+          remove-android: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-docker-images: 'true'
+
+      - name: Clone UE source (sparse)
+        run: |
+          git clone --depth 1 --branch ${{ env.UE_VERSION }} \
+            --filter=blob:none --sparse \
+            https://${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_TOKEN }}@github.com/EpicGames/UnrealEngine.git ${{ env.UE_PATH }}
+
+          git -C ${{ env.UE_PATH }} sparse-checkout set \
+            Engine/Source/Programs \
+            Engine/Binaries/DotNET/GitDependencies \
+            Engine/Build
+
+      - name: Run UE Setup.sh
+        working-directory: ${{ env.UE_PATH }}
+        run: |
+          ./Setup.sh --force \
+            --exclude=Mac --exclude=IOS --exclude=TVOS \
+            --exclude=Android --exclude=Win64 --exclude=Win32 \
+            --exclude=HoloLens --exclude=VisionOS \
+            --exclude=Documentation --exclude=FeaturePacks \
+            --exclude=Templates --exclude=Samples
+
+      - name: Setup UE Linux toolchain
+        working-directory: ${{ env.UE_PATH }}
+        run: |
+          chmod +x Engine/Build/BatchFiles/Linux/Setup.sh Engine/Build/BatchFiles/Linux/SetupDotnet.sh Engine/Build/BatchFiles/RunUAT.sh
+          ./Engine/Build/BatchFiles/Linux/Setup.sh
+
+      - uses: actions/checkout@v4
+        with:
+          path: plugins
+
+      - name: Install Server plugins
+        working-directory: ${{ env.UE_PATH }}/Engine/Source/Programs/Horde/HordeServer
+        run: |
+          echo "Copying plugins into ../Plugins/OutOfTheBoxPlugins/"
+          mkdir -p ../Plugins/OutOfTheBoxPlugins
+          cp -r "${{ github.workspace }}/plugins/Server/HordeServer.StorageReporter" ../Plugins/OutOfTheBoxPlugins/HordeServer.StorageReporter
+
+          echo "Registering plugins in HordeServer.csproj"
+          dotnet add HordeServer.csproj reference ../Plugins/OutOfTheBoxPlugins/HordeServer.StorageReporter/HordeServer.StorageReporter.csproj
+
+      - name: Install Dashboard plugins
+        working-directory: ${{ env.UE_PATH }}/Engine/Source/Programs/Horde/HordeDashboard
+        run: |
+          echo "Copying plugins into plugins/"
+          cp -r "${{ github.workspace }}/plugins/Dashboard/storage-reporter" plugins/storage-reporter
+
+          echo "Registering plugins in plugins/registry.ts"
+          echo 'import "./storage-reporter";' >> plugins/registry.ts
+
+      - name: Run BuildGraph
+        working-directory: ${{ env.UE_PATH }}
+        run: |
+          ./Engine/Build/BatchFiles/RunUAT.sh BuildGraph -Script=Engine/Source/Programs/Horde/BuildHorde.xml -Target="Build HordeServer with Dashboard"
