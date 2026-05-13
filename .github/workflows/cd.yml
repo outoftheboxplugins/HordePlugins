@@ -1,0 +1,72 @@
+name: CD
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  publish-server:
+    name: Publish HordeServer plugins (NuGet)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup UE workspace
+        id: ue
+        uses: outoftheboxplugins/BuildMachines/.github/actions/setup-ue-workspace@master
+        with:
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
+          ue-version: "5.7"
+
+      - name: Setup UE Dotnet
+        id: dotnet
+        uses: outoftheboxplugins/BuildMachines/.github/actions/setup-ue-dotnet@master
+        with:
+          ue-root: ${{ steps.ue.outputs.ue-root }}
+
+      - uses: actions/checkout@v4
+
+      - name: Compute version
+        id: version
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Server plugins
+        id: install-server
+        uses: outoftheboxplugins/BuildMachines/.github/actions/install-server-plugins@master
+        with:
+          ue-root: ${{ steps.ue.outputs.ue-root }}
+          source-root: ${{ github.workspace }}/Server
+          plugins: |
+            HordeServer.StorageReporter
+
+      - name: Publish Server plugins
+        id: publish-server
+        uses: outoftheboxplugins/BuildMachines/.github/actions/publish-server-plugins@master
+        with:
+          pack-dir: ${{ steps.install-server.outputs.horde-plugins-dir }}
+          version: ${{ steps.version.outputs.value }}
+          plugins: |
+            HordeServer.StorageReporter
+          nuget-api-key: ${{ secrets.NUGET_API_KEY }}
+
+  publish-dashboard:
+    name: Publish HordeDashboard plugins (npm)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute version
+        id: version
+        run: echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish Dashboard plugins
+        id: publish-dashboard
+        uses: outoftheboxplugins/BuildMachines/.github/actions/publish-dashboard-plugins@master
+        with:
+          source-root: ${{ github.workspace }}/Dashboard
+          version: ${{ steps.version.outputs.value }}
+          plugins: |
+            storage-reporter
+          npm-token: ${{ secrets.NPM_TOKEN }}

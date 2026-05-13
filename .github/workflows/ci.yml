@@ -23,6 +23,7 @@ jobs:
           ue-version: "5.7"
 
       - name: Setup UE Dotnet
+        id: dotnet
         uses: outoftheboxplugins/BuildMachines/.github/actions/setup-ue-dotnet@master
         with:
           ue-root: ${{ steps.ue.outputs.ue-root }}
@@ -30,6 +31,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: CI Hacks
+        id: ci-hacks
         working-directory: ${{ steps.ue.outputs.ue-root }}
         run: |
           echo "Disabling Epic's tests since they are not our responsibility and are failing on Github runners."
@@ -39,6 +41,7 @@ jobs:
           EOF
 
       - name: Install Server plugins
+        id: install-server
         uses: outoftheboxplugins/BuildMachines/.github/actions/install-server-plugins@master
         with:
           ue-root: ${{ steps.ue.outputs.ue-root }}
@@ -47,6 +50,7 @@ jobs:
             HordeServer.StorageReporter
 
       - name: Install Dashboard plugins
+        id: install-dashboard
         uses: outoftheboxplugins/BuildMachines/.github/actions/install-dashboard-plugins@master
         with:
           ue-root: ${{ steps.ue.outputs.ue-root }}
@@ -55,6 +59,7 @@ jobs:
             storage-reporter
 
       - name: Run BuildGraph
+        id: build
         working-directory: ${{ steps.ue.outputs.ue-root }}
         run: |
           ./Engine/Build/BatchFiles/RunUAT.sh BuildGraph -Script=Engine/Source/Programs/Horde/BuildHorde.xml -Target="Build HordeServer with Dashboard"
