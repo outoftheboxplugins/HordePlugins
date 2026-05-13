@@ -38,7 +38,11 @@ jobs:
             https://${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_TOKEN }}@github.com/EpicGames/UnrealEngine.git ${{ env.UE_PATH }}
 
           git -C ${{ env.UE_PATH }} sparse-checkout set \
-            Engine/Source/Programs \
+            Engine/Source/Programs/Horde \
+            Engine/Source/Programs/Shared \
+            Engine/Source/Programs/UnrealBuildTool \
+            Engine/Source/Programs/AutomationTool/AutomationUtils \
+            Engine/Source/Programs/AutomationTool/BuildGraph \
             Engine/Binaries/DotNET/GitDependencies \
             Engine/Build
 
