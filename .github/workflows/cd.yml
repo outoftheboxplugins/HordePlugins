@@ -68,5 +68,6 @@ jobs:
           source-root: ${{ github.workspace }}/Dashboard
           version: ${{ steps.version.outputs.value }}
           plugins: |
+            horde-plugins-cli
             storage-reporter
           npm-token: ${{ secrets.NPM_TOKEN }}
