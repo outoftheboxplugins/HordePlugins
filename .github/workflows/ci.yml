@@ -58,6 +58,14 @@ jobs:
           chmod +x Engine/Build/BatchFiles/Linux/Setup.sh Engine/Build/BatchFiles/Linux/SetupDotnet.sh Engine/Build/BatchFiles/RunUAT.sh
           ./Engine/Build/BatchFiles/Linux/Setup.sh
 
+          # Forward SetupDotnet's exports to subsequent steps.
+          source ./Engine/Build/BatchFiles/Linux/SetupDotnet.sh ./Engine/Build/BatchFiles/Linux
+          echo "$UE_DOTNET_DIR" >> "$GITHUB_PATH"
+          echo "UE_DOTNET_DIR=$UE_DOTNET_DIR" >> "$GITHUB_ENV"
+          echo "DOTNET_ROOT=$UE_DOTNET_DIR" >> "$GITHUB_ENV"
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> "$GITHUB_ENV"
+          echo "DOTNET_SYSTEM_GLOBALIZATION_APPLOCALICU=$DOTNET_SYSTEM_GLOBALIZATION_APPLOCALICU" >> "$GITHUB_ENV"
+
       - uses: actions/checkout@v4
         with:
           path: plugins
