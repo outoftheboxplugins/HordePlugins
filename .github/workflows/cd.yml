@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish-server:
-    name: Publish HordeServer plugins (NuGet)
+    name: Publish HordeServer plugins
     runs-on: ubuntu-latest
 
     steps:
@@ -51,7 +51,7 @@ jobs:
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   publish-dashboard:
-    name: Publish HordeDashboard plugins (npm)
+    name: Publish HordeDashboard plugins
     runs-on: ubuntu-latest
 
     steps:
