@@ -1,12 +1,16 @@
-# Installation
+# Plugins
 
-## Server
+## Storage Reporter
+
+breaks down the artifacts distribution for CI
+
+### Server
 ```
 cd Engine\Source\Programs\Horde\HordeServer
 dotnet add HordeServer.csproj package
 ```
 
-## Dashboard
+### Dashboard
 
 ```
 cd Engine\Source\Programs\Horde\HordeDashboard
