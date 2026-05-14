@@ -1,4 +1,4 @@
-import { registerHordePlugin, MountType } from "#hordePlugins";
+import { registerHordePlugin, MountType } from "../../../plugins";
 import { StorageReportView } from "./storageReportView";
 
 registerHordePlugin({
