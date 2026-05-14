@@ -2,7 +2,7 @@
 
 ## Storage Reporter
 
-breaks down the artifacts distribution for CI
+Breaks down the artifacts distribution for CI.
 
 ### Server
 ```
