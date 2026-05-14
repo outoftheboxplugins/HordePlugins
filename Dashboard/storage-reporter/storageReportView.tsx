@@ -1,5 +1,5 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode, Spinner, Stack, Text } from "@fluentui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import backend from "../../../src/backend";
 import dashboard from "../../../src/backend/Dashboard";
 import { useWindowSize } from "../../../src/base/utilities/hooks";
@@ -20,9 +20,15 @@ export const StorageReportView: React.FC = () => {
    const [slices, setSlices] = useState<Slice[]>();
    const windowSize = useWindowSize();
 
-   backend.fetch.get("api/v1/storage-reporter/by-namespace").then(response => {
-      setSlices((response.data as { slices: Slice[] }).slices);
-   }).catch(reason => { console.error(reason); });
+   useEffect(() => {
+      let cancelled = false;
+      backend.fetch.get("api/v1/storage-reporter/by-namespace").then(response => {
+         if (!cancelled) {
+            setSlices((response.data as { slices: Slice[] }).slices);
+         }
+      }).catch(reason => { console.error(reason); });
+      return () => { cancelled = true; };
+   }, []);
 
    const { hordeClasses, modeColors } = getHordeStyling();
    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
