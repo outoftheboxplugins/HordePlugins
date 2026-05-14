@@ -17,24 +17,41 @@ const columns: IColumn[] = [
 
 export const StorageReportView: React.FC = () => {
    const [slices, setSlices] = useState<Slice[]>();
+   const windowSize = useWindowSize();
 
    backend.fetch.get("api/v1/storage-reporter/by-namespace").then(response => {
       setSlices((response.data as { slices: Slice[] }).slices);
    }).catch(reason => { console.error(reason); });
 
-   const hordeClasses = getHordeStyling();
-   
+   const { hordeClasses, modeColors } = getHordeStyling();
+   const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+   const centerAlign = vw / 2 - 720;
+   const key = `windowsize_storage_report_${windowSize.width}_${windowSize.height}`;
+
    return (
       <Stack className={hordeClasses.horde}>
          <TopNav />
          <Breadcrumbs items={[{ text: "Storage Reports" }]} />
-         <Stack style={{ padding: 24 }}>
-            {!slices ? <Spinner /> : (
-               <DetailsList items={slices} columns={columns}
-                  selectionMode={SelectionMode.none}
-                  layoutMode={DetailsListLayoutMode.justified}
-                  compact />
-            )}
+         <Stack styles={{ root: { width: "100%", backgroundColor: modeColors.background } }}>
+            <Stack style={{ width: "100%", backgroundColor: modeColors.background }}>
+               <Stack style={{ position: "relative", width: "100%", height: "calc(100vh - 148px)" }}>
+                  <div style={{ overflowX: "auto", overflowY: "visible" }}>
+                     <Stack horizontal style={{ paddingTop: 12, paddingBottom: 48 }}>
+                        <Stack key={key} style={{ paddingLeft: centerAlign }} />
+                        <Stack style={{ width: 1440 }}>
+                           <Stack className={hordeClasses.raised}>
+                              {!slices ? <Spinner /> : (
+                                 <DetailsList items={slices} columns={columns}
+                                    selectionMode={SelectionMode.none}
+                                    layoutMode={DetailsListLayoutMode.justified}
+                                    compact />
+                              )}
+                           </Stack>
+                        </Stack>
+                     </Stack>
+                  </div>
+               </Stack>
+            </Stack>
          </Stack>
       </Stack>
    );
