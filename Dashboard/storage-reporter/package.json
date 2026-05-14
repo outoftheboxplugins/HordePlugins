@@ -14,5 +14,9 @@
    ],
    "publishConfig": {
       "access": "public"
+   },
+   "imports": {
+      "#hordePlugins": "../../../plugins",
+      "#horde/*": "../../../src/*"
    }
 }

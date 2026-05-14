@@ -1,10 +1,11 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode, Spinner, Stack, Text } from "@fluentui/react";
-import backend from "horde/backend";
-import { formatBytes } from "horde/base/utilities/stringUtills";
-import { Breadcrumbs } from "horde/components/Breadcrumbs";
-import { TopNav } from "horde/components/TopNav";
-import { getHordeStyling } from "horde/styles/Styles";
 import { useState } from "react";
+import backend from "#horde/backend";
+import { useWindowSize } from "#horde/base/utilities/hooks";
+import { formatBytes } from "#horde/base/utilities/stringUtills";
+import { Breadcrumbs } from "#horde/components/Breadcrumbs";
+import { TopNav } from "#horde/components/TopNav";
+import { getHordeStyling } from "#horde/styles/Styles";
 
 type Slice = { label: string; sizeBytes: number; count: number };
 
