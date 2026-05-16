@@ -22,15 +22,19 @@
   </ItemGroup>
 
   <!-- Horde dependencies -->
+  <!-- $(HordeRoot) default assumes this csproj lives alongside other Horde plugins -->
+  <PropertyGroup>
+    <HordeRoot Condition="'$(HordeRoot)' == ''">..\..\..\..</HordeRoot>
+  </PropertyGroup>
   <!-- PrivateAssets=all because consumers resolve these from their local Horde source -->
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Shared\EpicGames.Horde\EpicGames.Horde.csproj">
+    <ProjectReference Include="$(HordeRoot)\Shared\EpicGames.Horde\EpicGames.Horde.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\HordeServer.Shared\HordeServer.Shared.csproj">
+    <ProjectReference Include="$(HordeRoot)\Horde\HordeServer.Shared\HordeServer.Shared.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
-    <ProjectReference Include="..\..\Storage\HordeServer.Storage\HordeServer.Storage.csproj">
+    <ProjectReference Include="$(HordeRoot)\Horde\Plugins\Storage\HordeServer.Storage\HordeServer.Storage.csproj">
       <PrivateAssets>all</PrivateAssets>
     </ProjectReference>
   </ItemGroup>
