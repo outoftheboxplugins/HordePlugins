@@ -23,7 +23,7 @@ npx @outoftheboxplugins/horde-plugins-cli storage-reporter
 
 Adds a **Manual Upload** entry under the Tools menu that lets authorized users upload a new tool deployment (.zip) without needing CLI access.
 
-Tools must opt in via `"manualUpload": "true"` in their `metadata` block in `globals.json`, and the user must have the `UploadTool` ACL action on that tool.
+<img width="1495" height="898" alt="image" src="https://github.com/user-attachments/assets/72ed82e2-eb96-47e2-9c56-ab980f539102" />
 
 ### Server
 ```
@@ -39,6 +39,8 @@ npx @outoftheboxplugins/horde-plugins-cli tools-uploader
 ```
 
 ### Configuration
+
+NOTE: Tools must opt in via `"manualUpload": "true"` in their `metadata` block in `globals.json`, and the user must have the `UploadTool` ACL action on that tool.
 
 In `globals.json`, add `"manualUpload": "true"` to the `metadata` of any tool you want to appear in the uploader:
 
