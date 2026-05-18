@@ -111,10 +111,18 @@ public sealed class EmailNotificationSink : INotificationSink
 	/// <inheritdoc/>
 	public async Task NotifyConfigUpdateAsync(ConfigUpdateInfo info, CancellationToken cancellationToken)
 	{
-		var sb = new StringBuilder();
-		sb.AppendLine($"Configuration '{info.FileName}' was updated successfully.");
+		if (info.Exception != null)
+		{
+			await NotifyConfigUpdateFailureAsync(info.Exception.Message, "-", cancellationToken: cancellationToken);
+			return;
+		}
 
-		string subject = $"[Horde] Config Updated — {info.FileName}";
+		var sb = new StringBuilder();
+		sb.AppendLine("Configuration updated successfully.");
+		foreach (string line in info.Status)
+			sb.AppendLine(line);
+
+		string subject = "[Horde] Config Updated";
 		await TrySendToAllAsync(_recipients.ConfigNotification, subject, sb.ToString(), cancellationToken);
 	}
 
