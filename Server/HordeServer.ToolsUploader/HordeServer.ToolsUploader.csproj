@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Horde plugin boilerplate -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>OutOfTheBoxPlugins</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Package Info -->
+  <PropertyGroup>
+    <PackageId>OutOfTheBoxPlugins.HordeToolUploader</PackageId>
+    <Authors>Out of the Box Plugins</Authors>
+    <Description>Allow manual tool upload via UI for Horde.</Description>
+    <RepositoryUrl>https://github.com/outoftheboxplugins/HordePlugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Horde dependencies -->
+  <!-- $(HordeRoot) default assumes this csproj lives alongside other Horde plugins -->
+  <PropertyGroup>
+    <HordeRoot Condition="'$(HordeRoot)' == ''">..\..\..\..</HordeRoot>
+  </PropertyGroup>
+  <!-- PrivateAssets=all because consumers resolve these from their local Horde source -->
+  <ItemGroup>
+    <ProjectReference Include="$(HordeRoot)\Shared\EpicGames.Horde\EpicGames.Horde.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="$(HordeRoot)\Horde\HordeServer.Shared\HordeServer.Shared.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="$(HordeRoot)\Horde\Plugins\Tools\HordeServer.Tools\HordeServer.Tools.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+</Project>

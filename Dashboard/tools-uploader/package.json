@@ -1,0 +1,18 @@
+{
+   "name": "@outoftheboxplugins/horde-tools-uploader",
+   "version": "0.0.0",
+   "description": "Drag-and-drop tool deployment uploader for the Horde dashboard.",
+   "license": "SEE LICENSE IN LICENSE.md",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/outoftheboxplugins/HordePlugins"
+   },
+   "files": [
+      "LICENSE.md",
+      "index.tsx",
+      "toolsUploaderView.tsx"
+   ],
+   "publishConfig": {
+      "access": "public"
+   }
+}
