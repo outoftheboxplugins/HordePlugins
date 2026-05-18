@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Horde plugin boilerplate -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>OutOfTheBoxPlugins</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Package Info -->
+  <PropertyGroup>
+    <PackageId>OutOfTheBoxPlugins.HordeEmailNotifications</PackageId>
+    <Authors>Out of the Box Plugins</Authors>
+    <Description>Email notification sink for the Horde build server.</Description>
+    <RepositoryUrl>https://github.com/outoftheboxplugins/HordePlugins</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="LICENSE.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <!-- Horde dependencies -->
+  <!-- $(HordeRoot) default assumes this csproj lives alongside other Horde plugins inside the engine tree:
+       Engine/Source/Programs/Horde/Plugins/<Category>/HordeServer.EmailNotifications/ -->
+  <PropertyGroup>
+    <HordeRoot Condition="'$(HordeRoot)' == ''">..\..\..\..</HordeRoot>
+  </PropertyGroup>
+  <!-- PrivateAssets=all: consumers resolve these from their own Horde checkout -->
+  <ItemGroup>
+    <ProjectReference Include="$(HordeRoot)\Shared\EpicGames.Horde\EpicGames.Horde.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="$(HordeRoot)\Horde\HordeServer.Shared\HordeServer.Shared.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+    <ProjectReference Include="$(HordeRoot)\Horde\Plugins\Build\HordeServer.Build\HordeServer.Build.csproj">
+      <PrivateAssets>all</PrivateAssets>
+    </ProjectReference>
+  </ItemGroup>
+
+  <!-- External dependencies -->
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.16.0" />
+  </ItemGroup>
+
+</Project>
