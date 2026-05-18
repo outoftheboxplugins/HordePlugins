@@ -48,6 +48,7 @@ jobs:
           source-root: ${{ github.workspace }}/Server
           plugins: |
             HordeServer.StorageReporter
+            HordeServer.ToolsUploader
 
       - name: Install Dashboard plugins
         id: install-dashboard
@@ -57,6 +58,7 @@ jobs:
           source-root: ${{ github.workspace }}/Dashboard
           plugins: |
             storage-reporter
+            tools-uploader
 
       - name: Run BuildGraph
         id: build

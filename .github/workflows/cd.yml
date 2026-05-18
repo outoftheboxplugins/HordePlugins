@@ -39,6 +39,7 @@ jobs:
           source-root: ${{ github.workspace }}/Server
           plugins: |
             HordeServer.StorageReporter
+            HordeServer.ToolsUploader
 
       - name: Publish Server plugins
         id: publish-server
@@ -48,6 +49,7 @@ jobs:
           version: ${{ steps.version.outputs.value }}
           plugins: |
             HordeServer.StorageReporter
+            HordeServer.ToolsUploader
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   publish-dashboard:
@@ -70,4 +72,5 @@ jobs:
           plugins: |
             horde-plugins-cli
             storage-reporter
+            tools-uploader
           npm-token: ${{ secrets.NPM_TOKEN }}
