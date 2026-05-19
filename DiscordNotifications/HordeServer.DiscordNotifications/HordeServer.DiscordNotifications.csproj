@@ -22,8 +22,7 @@
   </ItemGroup>
 
   <!-- Horde dependencies -->
-  <!-- $(HordeRoot) default assumes this csproj lives alongside other Horde plugins inside the engine tree:
-       Engine/Source/Programs/Horde/Plugins/<Category>/HordeServer.EmailNotifications/ -->
+  <!-- $(HordeRoot) default assumes this csproj lives alongside other Horde plugins -->
   <PropertyGroup>
     <HordeRoot Condition="'$(HordeRoot)' == ''">..\..\..\..</HordeRoot>
   </PropertyGroup>
