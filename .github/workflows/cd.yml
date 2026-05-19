@@ -36,12 +36,12 @@ jobs:
         uses: outoftheboxplugins/BuildMachines/.github/actions/install-server-plugins@master
         with:
           ue-root: ${{ steps.ue.outputs.ue-root }}
-          source-root: ${{ github.workspace }}/Server
+          source-root: ${{ github.workspace }}
           plugins: |
-            HordeServer.StorageReporter
-            HordeServer.ToolsUploader
-            HordeServer.EmailNotifications
-            HordeServer.DiscordNotifications
+            StorageReporter/HordeServer.StorageReporter
+            ToolsUploader/HordeServer.ToolsUploader
+            EmailNotifications/HordeServer.EmailNotifications
+            DiscordNotifications/HordeServer.DiscordNotifications
 
       - name: Publish Server plugins
         id: publish-server
@@ -50,10 +50,10 @@ jobs:
           pack-dir: ${{ steps.install-server.outputs.horde-plugins-dir }}
           version: ${{ steps.version.outputs.value }}
           plugins: |
-            HordeServer.StorageReporter
-            HordeServer.ToolsUploader
-            HordeServer.EmailNotifications
-            HordeServer.DiscordNotifications
+            StorageReporter/HordeServer.StorageReporter
+            ToolsUploader/HordeServer.ToolsUploader
+            EmailNotifications/HordeServer.EmailNotifications
+            DiscordNotifications/HordeServer.DiscordNotifications
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   publish-dashboard:
@@ -71,10 +71,9 @@ jobs:
         id: publish-dashboard
         uses: outoftheboxplugins/BuildMachines/.github/actions/publish-dashboard-plugins@master
         with:
-          source-root: ${{ github.workspace }}/Dashboard
+          source-root: ${{ github.workspace }}
           version: ${{ steps.version.outputs.value }}
           plugins: |
-            horde-plugins-cli
-            storage-reporter
-            tools-uploader
+            StorageReporter/storage-reporter
+            ToolsUploader/tools-uploader
           npm-token: ${{ secrets.NPM_TOKEN }}

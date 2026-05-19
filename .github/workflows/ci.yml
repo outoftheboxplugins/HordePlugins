@@ -45,22 +45,22 @@ jobs:
         uses: outoftheboxplugins/BuildMachines/.github/actions/install-server-plugins@master
         with:
           ue-root: ${{ steps.ue.outputs.ue-root }}
-          source-root: ${{ github.workspace }}/Server
+          source-root: ${{ github.workspace }}
           plugins: |
-            HordeServer.StorageReporter
-            HordeServer.ToolsUploader
-            HordeServer.EmailNotifications
-            HordeServer.DiscordNotifications
+            StorageReporter/HordeServer.StorageReporter
+            ToolsUploader/HordeServer.ToolsUploader
+            EmailNotifications/HordeServer.EmailNotifications
+            DiscordNotifications/HordeServer.DiscordNotifications
 
       - name: Install Dashboard plugins
         id: install-dashboard
         uses: outoftheboxplugins/BuildMachines/.github/actions/install-dashboard-plugins@master
         with:
           ue-root: ${{ steps.ue.outputs.ue-root }}
-          source-root: ${{ github.workspace }}/Dashboard
+          source-root: ${{ github.workspace }}
           plugins: |
-            storage-reporter
-            tools-uploader
+            StorageReporter/storage-reporter
+            ToolsUploader/tools-uploader
 
       - name: Run BuildGraph
         id: build
