@@ -57,14 +57,9 @@ public class SmtpConfig
 public class RecipientsConfig
 {
 	/// <summary>
-	/// Config update failure notifications. Falls back from UpdateStreamsNotification when that list is empty.
+	/// Config update failure notifications.
 	/// </summary>
 	public string[] ConfigNotification { get; set; } = [];
-
-	/// <summary>
-	/// Stream config update failure notifications.
-	/// </summary>
-	public string[] UpdateStreamsNotification { get; set; } = [];
 
 	/// <summary>
 	/// Stream-level job notifications. Also the fallback when a step has no users with a known email.
