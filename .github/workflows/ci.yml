@@ -49,6 +49,8 @@ jobs:
           plugins: |
             HordeServer.StorageReporter
             HordeServer.ToolsUploader
+            HordeServer.EmailNotifications
+            HordeServer.DiscordNotifications
 
       - name: Install Dashboard plugins
         id: install-dashboard

@@ -40,6 +40,8 @@ jobs:
           plugins: |
             HordeServer.StorageReporter
             HordeServer.ToolsUploader
+            HordeServer.EmailNotifications
+            HordeServer.DiscordNotifications
 
       - name: Publish Server plugins
         id: publish-server
@@ -50,6 +52,8 @@ jobs:
           plugins: |
             HordeServer.StorageReporter
             HordeServer.ToolsUploader
+            HordeServer.EmailNotifications
+            HordeServer.DiscordNotifications
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   publish-dashboard:
