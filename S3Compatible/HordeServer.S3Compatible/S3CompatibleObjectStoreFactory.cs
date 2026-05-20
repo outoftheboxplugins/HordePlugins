@@ -67,7 +67,7 @@ sealed class S3CompatibleOptions : IAwsStorageOptions
 
 	public AwsCredentialsType? AwsCredentials => null;
 	public string? AwsBucketName => _entry.BucketName;
-	public string? AwsBucketPath => null;
+	public string? AwsBucketPath => _entry.BucketPath;
 	public string? AwsRole => null;
 	public string? AwsProfile => null;
 	public string? AwsRegion => _entry.Region;

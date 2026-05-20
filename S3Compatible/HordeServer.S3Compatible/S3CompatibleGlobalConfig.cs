@@ -119,4 +119,9 @@ public class S3CompatibleBackendEntry
 	/// Secret access key.
 	/// </summary>
 	public string SecretKey { get; set; } = string.Empty;
+
+	/// <summary>
+	/// Optional path prefix applied to all object keys within the bucket (e.g. "horde-artifacts").
+	/// </summary>
+	public string BucketPath { get; set; } = string.Empty;
 }
