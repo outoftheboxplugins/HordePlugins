@@ -22,6 +22,13 @@ public class S3CompatibleGlobalConfig : IPluginConfig
 			return;
 		}
 
+		// Since Storage's PostLoad already ran we need to clear the namespace ACLs it registered before re-running it.
+		// Also, it needs to run before namespaces are changed below because replaced namespaces become unreachable after.
+		foreach (NamespaceConfig ns in storageConfig.Namespaces)
+		{
+			configOptions.ParentAcl.Children?.Remove(ns.Acl);
+		}
+
 		foreach (S3CompatibleBackendEntry entry in Backends)
 		{
 			BackendId backendId = new(entry.Id);
