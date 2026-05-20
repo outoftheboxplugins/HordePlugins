@@ -51,6 +51,7 @@ jobs:
             ToolsUploader/HordeServer.ToolsUploader
             EmailNotifications/HordeServer.EmailNotifications
             DiscordNotifications/HordeServer.DiscordNotifications
+            S3Compatible/HordeServer.S3Compatible
 
       - name: Install Dashboard plugins
         id: install-dashboard

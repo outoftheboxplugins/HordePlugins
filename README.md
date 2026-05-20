@@ -10,3 +10,4 @@ First-party plugins for the [Horde](https://dev.epicgames.com/documentation/unre
 | [Tools Uploader](ToolsUploader/) | Drag-and-drop tool deployment upload via the dashboard |
 | [Discord Notifications](DiscordNotifications/) | Build notifications via Discord webhooks |
 | [Email Notifications](EmailNotifications/) | Build notifications via SMTP email |
+| [S3 Compatible](S3Compatible/) | S3-compatible storage backend (MinIO, Backblaze B2, Cloudflare R2, etc.) |
