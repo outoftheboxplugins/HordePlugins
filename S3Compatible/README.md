@@ -6,7 +6,7 @@ Adds support for any S3-compatible object store (MinIO, Backblaze B2, Cloudflare
 
 Everything is configured in `globals.json` — no changes to `appsettings.json` are needed.
 
-### 1. Declare your backends under `plugins.s3compatible`
+Add both `backends` and `namespaces` under `plugins.s3compatible`:
 
 ```json
 {
@@ -22,18 +22,7 @@ Everything is configured in `globals.json` — no changes to `appsettings.json` 
           "accessKey": "your-key-id",
           "secretKey": "your-application-key"
         }
-      ]
-    }
-  }
-}
-```
-
-### 2. Map namespaces to your backends under `plugins.storage`
-
-```json
-{
-  "plugins": {
-    "storage": {
+      ],
       "namespaces": [
         { "id": "horde-tools", "backend": "backblaze" }
       ]
@@ -42,4 +31,18 @@ Everything is configured in `globals.json` — no changes to `appsettings.json` 
 }
 ```
 
-The `backend` value must match an `id` declared in `plugins.s3compatible.backends`.
+> **Important:** Namespaces that point to S3-compatible backends must be declared under `plugins.s3compatible.namespaces`, not `plugins.storage.namespaces`. Storage validates its namespaces before this plugin has a chance to register the backends, which would cause a startup error.
+
+### Optional: store objects under a path prefix
+
+Use `bucketPath` to isolate Horde data within a shared bucket:
+
+```json
+{
+  "id": "backblaze",
+  ...
+  "bucketPath": "horde-artifacts"
+}
+```
+
+Nested paths are supported (e.g. `"horde-artifacts/prod"`).
