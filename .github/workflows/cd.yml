@@ -42,6 +42,7 @@ jobs:
             ToolsUploader/HordeServer.ToolsUploader
             EmailNotifications/HordeServer.EmailNotifications
             DiscordNotifications/HordeServer.DiscordNotifications
+            S3Compatible/HordeServer.S3Compatible
 
       - name: Publish Server plugins
         id: publish-server
@@ -54,6 +55,7 @@ jobs:
             ToolsUploader/HordeServer.ToolsUploader
             EmailNotifications/HordeServer.EmailNotifications
             DiscordNotifications/HordeServer.DiscordNotifications
+            S3Compatible/HordeServer.S3Compatible
           nuget-api-key: ${{ secrets.NUGET_API_KEY }}
 
   publish-dashboard:
