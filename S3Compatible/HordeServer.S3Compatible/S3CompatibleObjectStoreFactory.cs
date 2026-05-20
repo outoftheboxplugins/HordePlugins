@@ -14,8 +14,6 @@ sealed class S3CompatibleObjectStoreFactory : IObjectStoreFactory
 	readonly IServiceProvider _serviceProvider;
 	readonly IObjectStoreFactory _fallbackFactory;
 	readonly IOptionsMonitor<S3CompatibleGlobalConfig> _monitor;
-	readonly object _lockObject = new object();
-	readonly Dictionary<string, IObjectStore> _objectStores = new();
 	readonly ILogger _logger;
 
 	public S3CompatibleObjectStoreFactory(IServiceProvider serviceProvider, IObjectStoreFactory fallbackFactory, IOptionsMonitor<S3CompatibleGlobalConfig> monitor, ILogger<S3CompatibleObjectStoreFactory> logger)
@@ -36,21 +34,8 @@ sealed class S3CompatibleObjectStoreFactory : IObjectStoreFactory
 			return _fallbackFactory.CreateObjectStore(config);
 		}
 
-		lock (_lockObject)
-		{
-			if (!_objectStores.TryGetValue(id, out IObjectStore? objectStore))
-			{
-				objectStore = CreateObjectStoreInternal(entry);
-				_objectStores.Add(id, objectStore);
-				_logger.LogInformation("Created S3-compatible object store {Id}", config.Id);
-			}
+		_logger.LogInformation("Creating S3-compatible object store {Id}", config.Id);
 
-			return objectStore;
-		}
-	}
-
-	IObjectStore CreateObjectStoreInternal(S3CompatibleBackendEntry entry)
-	{
 		// Construct the client directly with endpoint and credentials so we bypass AwsObjectStoreFactory,
 		// which would otherwise require patching to support custom ServiceURLs.
 		AmazonS3Config awsConfig = new() { ServiceURL = entry.Endpoint, ForcePathStyle = entry.ForcePathStyle };
