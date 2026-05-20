@@ -1,3 +1,4 @@
+using EpicGames.Horde.Storage;
 using HordeServer.Plugins;
 using HordeServer.Storage;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,8 @@ public class S3CompatibleGlobalConfig : IPluginConfig
 {
 	public List<S3CompatibleBackendEntry> Backends { get; set; } = [];
 
+	public List<S3CompatibleNamespaceEntry> Namespaces { get; set; } = [];
+
 	public void PostLoad(PluginConfigOptions configOptions)
 	{
 		var logger = configOptions.Logger;
@@ -15,22 +18,62 @@ public class S3CompatibleGlobalConfig : IPluginConfig
 
 		if (storageConfig == null)
 		{
-			logger?.LogWarning("S3Compatible plugin could not find StorageConfig; backends will not be registered.");
+			logger?.LogWarning("StorageConfig not found; Cannot inject S3-compatible backends");
 			return;
 		}
 
 		foreach (S3CompatibleBackendEntry entry in Backends)
 		{
 			BackendId backendId = new(entry.Id);
-			if (storageConfig.Backends.All(b => b.Id != backendId))
+
+			BackendConfig? existing = storageConfig.Backends.FirstOrDefault(b => b.Id == backendId);
+			if (existing != null)
+			{
+				storageConfig.Backends.Remove(existing);
+				logger?.LogInformation("Overriding existing backend {BackendId} with S3-compatible backend", backendId);
+			}
+			else
 			{
 				logger?.LogInformation("Registering S3-compatible backend {BackendId}", backendId);
-				storageConfig.Backends.Add(new BackendConfig { Id = backendId });
 			}
+
+			storageConfig.Backends.Add(new BackendConfig { Id = backendId });
+		}
+
+		foreach (S3CompatibleNamespaceEntry entry in Namespaces)
+		{
+			NamespaceId namespaceId = new(entry.Id);
+			BackendId backendId = new(entry.Backend);
+
+			NamespaceConfig? existing = storageConfig.Namespaces.FirstOrDefault(n => n.Id == namespaceId);
+			if (existing != null)
+			{
+				storageConfig.Namespaces.Remove(existing);
+				logger?.LogInformation("Overriding existing namespace {NamespaceId} with S3-compatible backend {BackendId}", namespaceId, backendId);
+			}
+			else
+			{
+				logger?.LogInformation("Registering S3-compatible namespace {NamespaceId} -> {BackendId}", namespaceId, backendId);
+			}
+
+			storageConfig.Namespaces.Add(new NamespaceConfig { Id = namespaceId, Backend = backendId });
 		}
 
 		storageConfig.PostLoad(configOptions);
 	}
+}
+
+public class S3CompatibleNamespaceEntry
+{
+	/// <summary>
+	/// Identifier for this namespace
+	/// </summary>
+	public string Id { get; set; } = string.Empty;
+
+	/// <summary>
+	/// Backend to use for this namespace
+	/// </summary>
+	public string Backend { get; set; } = string.Empty;
 }
 
 public class S3CompatibleBackendEntry

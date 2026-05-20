@@ -1,7 +1,5 @@
-using System.Text.Json;
 using Amazon.Runtime;
 using Amazon.S3;
-using EpicGames.Core;
 using EpicGames.Horde.Storage;
 using HordeServer.Storage;
 using HordeServer.Storage.ObjectStores;
@@ -14,14 +12,16 @@ namespace OutOfTheBoxPlugins.Horde.S3Compatible;
 sealed class S3CompatibleObjectStoreFactory : IObjectStoreFactory
 {
 	readonly IServiceProvider _serviceProvider;
+	readonly IObjectStoreFactory _fallbackFactory;
 	readonly IOptionsMonitor<S3CompatibleGlobalConfig> _monitor;
 	readonly object _lockObject = new object();
-	IReadOnlyDictionary<IoHash, IObjectStore> _objectStores = new Dictionary<IoHash, IObjectStore>();
+	readonly Dictionary<string, IObjectStore> _objectStores = new();
 	readonly ILogger _logger;
 
-	public S3CompatibleObjectStoreFactory(IServiceProvider serviceProvider, IOptionsMonitor<S3CompatibleGlobalConfig> monitor, ILogger<S3CompatibleObjectStoreFactory> logger)
+	public S3CompatibleObjectStoreFactory(IServiceProvider serviceProvider, IObjectStoreFactory fallbackFactory, IOptionsMonitor<S3CompatibleGlobalConfig> monitor, ILogger<S3CompatibleObjectStoreFactory> logger)
 	{
 		_serviceProvider = serviceProvider;
+		_fallbackFactory = fallbackFactory;
 		_monitor = monitor;
 		_logger = logger;
 	}
@@ -33,30 +33,20 @@ sealed class S3CompatibleObjectStoreFactory : IObjectStoreFactory
 		if (entry == null)
 		{
 			_logger.LogDebug("Backend {Id} is not an S3-compatible backend, passing through to the default factory.", config.Id);
-			return _serviceProvider.GetServices<IObjectStoreFactory>().First().CreateObjectStore(config);
+			return _fallbackFactory.CreateObjectStore(config);
 		}
 
-		IoHash hash = IoHash.Compute(JsonSerializer.SerializeToUtf8Bytes(entry));
-
-		IObjectStore? objectStore;
-		if (!_objectStores.TryGetValue(hash, out objectStore))
+		lock (_lockObject)
 		{
-			lock (_lockObject)
+			if (!_objectStores.TryGetValue(id, out IObjectStore? objectStore))
 			{
-				if (!_objectStores.TryGetValue(hash, out objectStore))
-				{
-					objectStore = CreateObjectStoreInternal(entry);
-
-					Dictionary<IoHash, IObjectStore> newObjectStores = new Dictionary<IoHash, IObjectStore>(_objectStores);
-					newObjectStores.Add(hash, objectStore);
-					_objectStores = newObjectStores;
-
-					_logger.LogInformation("Created S3-compatible object store {Id}@{Hash}", config.Id, hash);
-				}
+				objectStore = CreateObjectStoreInternal(entry);
+				_objectStores.Add(id, objectStore);
+				_logger.LogInformation("Created S3-compatible object store {Id}", config.Id);
 			}
-		}
 
-		return objectStore;
+			return objectStore;
+		}
 	}
 
 	IObjectStore CreateObjectStoreInternal(S3CompatibleBackendEntry entry)
