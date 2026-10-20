@@ -79,8 +79,8 @@ public sealed class DiscordNotificationSink : INotificationSink
 
 	async Task PostAsync(string webhookUrl, DiscordEmbed embed, CancellationToken cancellationToken)
 	{
-		var payload = new DiscordPayload { Username = "Horde", Embeds = [embed] };
-		var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+		DiscordPayload payload = new DiscordPayload { Username = "Horde", Embeds = [embed] };
+		JsonSerializerOptions jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
 		using HttpClient client = _httpClientFactory.CreateClient();
 		using HttpResponseMessage response = await client.PostAsJsonAsync(webhookUrl, payload, jsonOptions, cancellationToken);
 		response.EnsureSuccessStatusCode();
@@ -117,7 +117,7 @@ public sealed class DiscordNotificationSink : INotificationSink
 	/// <inheritdoc/>
 	public async Task NotifyJobCompleteAsync(IJob job, IGraph graph, LabelOutcome outcome, CancellationToken cancellationToken)
 	{
-		var embed = new DiscordEmbed
+		DiscordEmbed embed = new DiscordEmbed
 		{
 			Title = $"Job '{job.Name}' {FormatLabelOutcome(outcome)}",
 			Color = OutcomeColor(outcome),
@@ -134,7 +134,7 @@ public sealed class DiscordNotificationSink : INotificationSink
 	/// <inheritdoc/>
 	public async Task NotifyJobCompleteAsync(IUser user, IJob job, IGraph graph, LabelOutcome outcome, CancellationToken cancellationToken)
 	{
-		var embed = new DiscordEmbed
+		DiscordEmbed embed = new DiscordEmbed
 		{
 			Title = $"Job '{job.Name}' {FormatLabelOutcome(outcome)}",
 			Description = $"Hi {user.Name}",
@@ -178,12 +178,12 @@ public sealed class DiscordNotificationSink : INotificationSink
 			return;
 		}
 
-		var sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.AppendLine("Configuration updated successfully.");
 		foreach (string line in info.Status)
 			sb.AppendLine(line);
 
-		var embed = new DiscordEmbed
+		DiscordEmbed embed = new DiscordEmbed
 		{
 			Title = "Config Updated",
 			Description = sb.ToString(),
@@ -196,7 +196,7 @@ public sealed class DiscordNotificationSink : INotificationSink
 	/// <inheritdoc/>
 	public async Task NotifyConfigUpdateFailureAsync(string errorMessage, string fileName, int? change = null, IUser? author = null, string? description = null, CancellationToken cancellationToken = default)
 	{
-		var embed = new DiscordEmbed
+		DiscordEmbed embed = new DiscordEmbed
 		{
 			Title = $"Config Update Failed — {fileName}",
 			Color = ColorRed,

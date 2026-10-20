@@ -34,13 +34,13 @@ public sealed class EmailNotificationSink : INotificationSink
 
 	async Task SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken)
 	{
-		var message = new MimeMessage();
+		MimeMessage message = new MimeMessage();
 		message.From.Add(new MailboxAddress(_smtp.FromName, _smtp.FromAddress));
 		message.To.Add(MailboxAddress.Parse(to));
 		message.Subject = subject;
 		message.Body = new TextPart("plain") { Text = body };
 
-		using var client = new SmtpClient();
+		using SmtpClient client = new SmtpClient();
 		await client.ConnectAsync(_smtp.Host!, _smtp.Port, _smtp.SslMode, cancellationToken);
 		await client.AuthenticateAsync(_smtp.Username ?? string.Empty, _smtp.Password ?? string.Empty, cancellationToken);
 		await client.SendAsync(message, cancellationToken);
@@ -120,7 +120,7 @@ public sealed class EmailNotificationSink : INotificationSink
 			return;
 		}
 
-		var sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.AppendLine("Configuration updated successfully.");
 		foreach (string line in info.Status)
 			sb.AppendLine(line);
@@ -132,7 +132,7 @@ public sealed class EmailNotificationSink : INotificationSink
 	/// <inheritdoc/>
 	public async Task NotifyConfigUpdateFailureAsync(string errorMessage, string fileName, int? change = null, IUser? author = null, string? description = null, CancellationToken cancellationToken = default)
 	{
-		var sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		sb.AppendLine($"Failed to update configuration: {fileName}");
 		sb.AppendLine($"Change:      {change?.ToString() ?? "-"}");
 		sb.AppendLine($"Author:      {author?.Name ?? "-"} ({author?.Login ?? "-"})");

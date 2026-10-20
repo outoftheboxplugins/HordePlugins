@@ -13,7 +13,7 @@ public class S3CompatibleGlobalConfig : IPluginConfig
 
 	public void PostLoad(PluginConfigOptions configOptions)
 	{
-		var logger = configOptions.Logger;
+		ILogger? logger = configOptions.Logger;
 		StorageConfig? storageConfig = configOptions.Plugins.OfType<StorageConfig>().FirstOrDefault();
 
 		if (storageConfig == null)
