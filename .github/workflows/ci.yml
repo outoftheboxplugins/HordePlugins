@@ -10,8 +10,15 @@ on:
 
 jobs:
   build-and-test:
-    name: Build & Test
+    name: Build & Test (${{ matrix.ue-version }})
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ue-version:
+          - ue5-main
+          - ue6-main
 
     steps:
       - name: Setup UE workspace
@@ -20,7 +27,7 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-token: ${{ secrets.DOCKER_TOKEN }}
-          ue-version: "5.7"
+          ue-version: ${{ matrix.ue-version }}
 
       - name: Setup UE Dotnet
         id: dotnet

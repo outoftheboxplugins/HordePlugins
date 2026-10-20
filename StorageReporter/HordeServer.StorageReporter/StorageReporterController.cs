@@ -1,28 +1,27 @@
-using EpicGames.Horde.Storage;
-using HordeServer.Storage;
+using HordeServer.Server;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace OutOfTheBoxPlugins.Horde.StorageReporter;
 
 [ApiController]
 [Route("api/v1/storage-reporter")]
-public class StorageReporterController(StorageService storageService) : ControllerBase
+public class StorageReporterController(IMongoService mongoService) : ControllerBase
 {
 	[HttpGet("by-namespace")]
 	public async Task<ActionResult<BreakdownResponse>> GetByNamespaceAsync(CancellationToken cancellationToken)
 	{
-		IStorageStats? stats = (await storageService.FindStatsAsync(count: 1, cancellationToken: cancellationToken)).FirstOrDefault();
-		if (stats == null)
-		{
-			return new BreakdownResponse { GeneratedUtc = DateTime.UtcNow, Slices = Array.Empty<BreakdownSlice>() };
-		}
+		List<BsonDocument> stats = await mongoService.GetCollection<BsonDocument>("Storage.Blobs").Aggregate()
+			.Group(new BsonDocument { { "_id", "$ns" }, { "size", new BsonDocument("$sum", "$len") }, { "count", new BsonDocument("$sum", 1) } })
+			.ToListAsync(cancellationToken);
 
-		List<BreakdownSlice> slices = stats.Namespaces
-			.OrderByDescending(kv => kv.Value.Size)
-			.Select(kv => new BreakdownSlice { Label = kv.Key.ToString(), SizeBytes = kv.Value.Size, Count = kv.Value.Count })
+		List<BreakdownSlice> slices = stats
+			.OrderByDescending(x => x["size"].ToInt64())
+			.Select(x => new BreakdownSlice { Label = x["_id"].ToString()!, SizeBytes = x["size"].ToInt64(), Count = x["count"].ToInt64() })
 			.ToList();
 
-		return new BreakdownResponse { GeneratedUtc = stats.Time, Slices = slices };
+		return new BreakdownResponse { GeneratedUtc = DateTime.UtcNow, Slices = slices };
 	}
 }
 

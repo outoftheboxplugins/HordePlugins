@@ -1,9 +1,12 @@
+using EpicGames.Horde.Agents;
 using EpicGames.Horde.Jobs;
 using EpicGames.Horde.Jobs.Graphs;
 using HordeServer.Agents;
 using HordeServer.Configuration;
 using HordeServer.Devices;
+using EpicGames.Horde.Users;
 using HordeServer.Issues;
+using HordeServer.Jobs.TestData;
 using HordeServer.Logs;
 using HordeServer.Notifications;
 using HordeServer.Streams;
@@ -220,6 +223,22 @@ public sealed class DiscordNotificationSink : INotificationSink
 	/// <inheritdoc/>
 	public Task SendAgentReportAsync(AgentReport report, CancellationToken cancellationToken)
 		=> Task.CompletedTask;
+
+	/// <inheritdoc/>
+	public Task SendSessionConflictReportAsync(IReadOnlyList<(AgentId Id, int Count)> conflicts, CancellationToken cancellationToken)
+		=> Task.CompletedTask;
+
+	/// <inheritdoc/>
+	public Task NotifyTestHealthReportAsync(ITestHealthReport report, string recipient, string[]? carbonCopies, CancellationToken cancellationToken)
+		=> Task.CompletedTask;
+
+	/// <inheritdoc/>
+	public Task<string?> GetDirectMessageLinkAsync(IReadOnlyList<UserId> userIds, CancellationToken cancellationToken = default)
+		=> Task.FromResult<string?>(null);
+
+	/// <inheritdoc/>
+	public Task<string?> GetChannelLinkAsync(string channel, CancellationToken cancellationToken = default)
+		=> Task.FromResult<string?>(null);
 
 	static string FormatLabelOutcome(LabelOutcome outcome) => outcome switch
 	{

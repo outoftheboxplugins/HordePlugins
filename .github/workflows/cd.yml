@@ -17,7 +17,7 @@ jobs:
         with:
           docker-username: ${{ secrets.DOCKER_USERNAME }}
           docker-token: ${{ secrets.DOCKER_TOKEN }}
-          ue-version: "5.7"
+          ue-version: "5.8"
 
       - name: Setup UE Dotnet
         id: dotnet
