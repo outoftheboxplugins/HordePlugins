@@ -61,6 +61,9 @@ jobs:
   publish-dashboard:
     name: Publish HordeDashboard plugins
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v4
@@ -78,4 +81,3 @@ jobs:
           plugins: |
             StorageReporter/storage-reporter
             ToolsUploader/tools-uploader
-          npm-token: ${{ secrets.NPM_TOKEN }}
